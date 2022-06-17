@@ -19,8 +19,6 @@ import de.ffle.mapcollector.source.INodeListSource;
 
 /**
  * Fetches node list from https://meshviewer.freifunk-dresden.de/ and filters by community
- * @author mwyraz
- *
  */
 public class FFDresdenNodeListSource implements INodeListSource {
 	

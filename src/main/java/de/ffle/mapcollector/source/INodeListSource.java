@@ -6,7 +6,7 @@ import java.util.List;
 import de.ffle.mapcollector.model.INodeAddress;
 
 /**
- * Source of complete node list
+ * Source of complete node list. May optionally be pre-filtered by community
  */
 public interface INodeListSource {
 	

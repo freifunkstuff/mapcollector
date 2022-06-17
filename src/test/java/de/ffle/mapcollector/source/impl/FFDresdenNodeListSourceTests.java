@@ -9,21 +9,36 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import de.ffle.mapcollector.model.INodeAddress;
 import de.ffle.mapcollector.source.INodeListSource;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = FFDresdenNodeListSourceTests.TestConfig.class)
 public class FFDresdenNodeListSourceTests {
 	
-	protected INodeListSource source=new FFDresdenNodeListSource() {
-		// override to get rid of network dependency for this test
-		protected byte[] downloadJsonList() throws IOException {
-			try (InputStream in=new FileInputStream("testdata/nodes.json")) {
-				return IOUtils.toByteArray(in);
-			}
+	static class TestConfig {
+		@Bean
+		public INodeListSource nodeListSource() {
+			return new FFDresdenNodeListSource() {
+				// override to get rid of network dependency for this test
+				protected byte[] downloadJsonList() throws IOException {
+					try (InputStream in=new FileInputStream("testdata/nodes.json")) {
+						return IOUtils.toByteArray(in);
+					}
+				}
+			};
 		}
-	};
+	}
+	
+	@Autowired
+	protected INodeListSource source;
 	
 	@Test
 	public void testFetchNodes() throws Exception {
