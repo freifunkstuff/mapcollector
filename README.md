@@ -111,9 +111,13 @@ Statistiken haben nur Gültigkeit, solange der Node online ist. Die folgenden St
 * uptime
 * clients2g (5min)
 * clients5g (5min)
-* traffic-statistiken
+* traffic-statistiken (Node)
     * wifi2_rx/tx
     * wifi5_rx/tx
+* traffic-statistiken (Server)
+    * traffic_wan rx/tx
+    * traffic_tbb_fastd tx/tx
+    * traffic_ovpn tx/tx
 * memory free
 * cpu load (5min)
 * prefered gateway
