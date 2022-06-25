@@ -1,6 +1,6 @@
 # Mapcollector - Kartenaggregator für Freifunk auf Basis der Freifunk-Dresden Firmware
 
-## Funktionsweise
+## Funktionsweise Kartenzugriff
 
 Benötigt wird ein [Gateway](https://freifunk-dresden.github.io/ffdd-server/) oder ein Node, welcher mit dem Freifunk-Dresden Netz verbunden ist. Dieser zeigt unter nodes.cgi _alle_ Konten des verbundenen Netzes an.
 
@@ -28,3 +28,64 @@ ProxyVia On
 ```
 
 Zusätzlich muss ein User mit `htpasswd -c /etc/config/proxy_auth proxyusername` für den Zugriff auf den Proxy erzeugt werden.
+
+
+## Arbeitsweise
+
+### Datenhaltung
+
+* KeyDB (Redis-kompatibler Key-Value-Store) für die Knoten-Infos (Redis kann auch verwendet werden)
+* VictoriaMetrics (Prometheuts-kompatible Zeitreihendatenbank) für statistische Daten (Pometheus kann auch verwendet werden)
+
+### Nodeliste aktualisieren
+
+* Knoten werden zyklisch von der Übersichtsseite des Gateways abgerufen
+* Neue Knoten werden mit ID und Adresse in die Nodeliste eingetragen
+   * "firstSeen" wird gesetzt
+* Für bestehende Knoten wird "lastSeen" aktualisiert
+   
+### Nodes aktualisieren
+
+* Alle Knoten werden zyklisch durchlaufen
+* Treffen bestimmte Bedingungen zu, wird über den Proxy eine direkte Verbindung zum Knoten aufgebaut und /sysinfo-json.cgi abgerufen
+    * Knoten, die noch nie abgefragt wurden, werden sofort abgefragt
+    * Knoten, deren Community nicht bekannt ist, werden jede Minute abgefragt
+    * Knoten, die seit weniger als 2 Tagen bekannt sind, werden jede Minute abgefragt
+    * Alle anderen Knoten werden 1x pro 5 Minuten abgefragt
+    * wenn ein Community-Filter aktiv ist
+	    * Knoten der eigenen Community werden 1x pro Minute abgefragt
+	    * Knoten anderer Communities werden 1x pro 15 Minuten abgefragt (Community könnte sich ja ändern)
+	    * statistische Daten werden nur für Knoten der eigenen Community erhoben
+* Datum/Uhrzeit des letzen Abrufs wird gespeichert
+* ist der Knoten erreichbar
+	* lastSeen wird aktualisiert
+	* Metadaten des Knotens werden aktualisiert
+	* Statistik des Knontens wird aktualisiert und an die Zeitreihen-Datenbank geschickt
+* ist der Knoten nicht erreichbar
+    * Online-Status des Knotens wird ermittelt (offline = X Minuten nach lastSeen)
+    * Online-Status wird an Zeitreihen-Datenbank geschickt
+
+
+### Nodes löschen
+
+* Knoten mit einer Node-ID < 1000 werden gelöscht, wenn sie >24h nicht online waren
+* Knoten werden aus der Datenbank gelöscht, wenn sie >30 Tage nicht online waren
+* Für alle Knoten wird eine interne ID für die Statistik vergeben. Damit bekommt ein Node, der gelöscht und später neu angelegt wurde, eine neue Statistik
+
+
+### Dynamisches Timeout (Idee, nicht umgesetzt)
+
+* die Dauer eines Requests wird gespeichert
+* gab es einen Timeout beim letzten Request, wird der Timeout beim nächsten Request erhöht
+* das Abfrageintervall wird bei höherem Timeout ebenfalls vergrößert
+* eine Statistik über die letzten N Aufrufe wird mitgeführt. Ist ein Knoten längere Zeit wieder mit kurzem Timeout erreichbar werden Timeout und Abfrageintervall wieder auf Standard gesetzt.
+
+
+### Traffic-Überlegungen
+
+* Abruf eines Knotens: ~6 kByte
+* Abruf eines Knotens alle 5 Minuten: ~50 MByte/Monat
+* Abruf von 800 Knoten alle 5 Minuten: ~40 GByte/Monat
+* Abruf eines Knotens jede Minute: ~250 MByte/Monat
+* Abruf von 800 Knoten jede Minute: ~200 GByte/Monat
+
