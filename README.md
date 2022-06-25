@@ -89,3 +89,48 @@ Zusätzlich muss ein User mit `htpasswd -c /etc/config/proxy_auth proxyusername`
 * Abruf eines Knotens jede Minute: ~250 MByte/Monat
 * Abruf von 800 Knoten jede Minute: ~200 GByte/Monat
 
+### Node-Stammdaten
+
+Stammdaten behalten ihre Gültigkeit, wenn der Node temporär offline ist. Die folgenden Stammdaten werden von Knoten abgefragt
+
+* firmware version
+* model
+* node_type
+* autoupdate
+* node name
+* community
+* ip
+* location lat/lon/alt
+* email
+* note
+
+### Node-Statistiken
+
+Statistiken haben nur Gültigkeit, solange der Node online ist. Die folgenden Statistiken werden von Knoten abgefragt:
+
+* uptime
+* clients2g (5min)
+* clients5g (5min)
+* traffic-statistiken
+    * wifi2_rx/tx
+    * wifi5_rx/tx
+* memory free
+* cpu load (5min)
+* prefered gateway
+* selected gateway
+* airtime 2g
+* airtime 5g
+* network-switch
+    * port-name + speed
+
+
+### Node-Links
+
+Links werden immer an beiden Seiten erfasst. Es kann aber sein, dass eine der beiden Seiten nicht erreichbar ist, dann kann der Link nur von einer Seite her erfasst werden.
+
+* Link-ID: besteht aus 2 Knoten-Nummern und dem Type. Die kleinere Knotennummer steht immer vorne.
+* Knoten beider Seiten
+* Mesh-Type (lan, wifi_mesh)
+* rq auf Seite des aktuellen Knotens als Qualitätsindex
+* tq auf Seite des aktuellen Knotens als Qualitätsindex der anderen Richtung als Fallback, wenn die Statistik des anderen Knotens fehlt
+
