@@ -36,9 +36,6 @@ public class MeshviewerController {
 		MeshviewerResponse response=new MeshviewerResponse();
 		
 		for (Node node: nodeRepository.getNodes()) {
-			if ("1945".equals(node.getId())) {
-				System.err.println(node.getInfo()+" "+communityFilter.isShownCommunity(node));
-			}
 			if (node.getInfo()==null) {
 				continue;
 			}
