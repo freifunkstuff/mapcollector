@@ -13,8 +13,7 @@ import org.apache.http.impl.client.HttpClients;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import de.ffle.mapcollector.model.INodeAddress;
-import de.ffle.mapcollector.model.impl.NodeAddress;
+import de.ffle.mapcollector.model.NodeAddress;
 import de.ffle.mapcollector.source.INodeListSource;
 
 /**
@@ -33,14 +32,14 @@ public class FFDresdenNodeListSource implements INodeListSource {
 	}
 	
 	@Override
-	public List<INodeAddress> fetchNodes() throws IOException {
+	public List<NodeAddress> fetchNodes() throws IOException {
 		byte[] json=downloadJsonList();
 		JsonNode data=new ObjectMapper().reader().readTree(json);
 		JsonNode nodes=data.get("nodes");
 		if (nodes==null) {
 			throw new IOException("No nodes found in JSON");
 		}
-		List<INodeAddress> result=new ArrayList<>();
+		List<NodeAddress> result=new ArrayList<>();
 		for (JsonNode node: nodes) {
 			JsonNode nodeInfo=node.get("nodeinfo");
 			String siteInfo=nodeInfo.get("system").get("site_code").textValue();

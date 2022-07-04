@@ -1,0 +1,19 @@
+nodelist:
+  class: GatewayNodeListSource
+  gateway:
+    ip: ${GATEWAY_IP}
+
+nodefetcher:
+  proxyUrl: ${GATEWAY_PROXY_URL:}
+  proxyUsername: ${GATEWAY_PROXY_USERNAME:}
+  proxyPassword: ${GATEWAY_PROXY_PASSWORD:} 
+
+noderepo:
+  redis:
+    host: 127.0.0.1
+    
+logging:
+  level:
+    root: WARN
+    reactor.netty: TRACE
+    de.ffle.mapcollector: ${LOG_LEVEL:INFO}

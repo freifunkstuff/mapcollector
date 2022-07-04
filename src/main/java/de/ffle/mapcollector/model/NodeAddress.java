@@ -1,8 +1,9 @@
-package de.ffle.mapcollector.model.impl;
+package de.ffle.mapcollector.model;
 
-import de.ffle.mapcollector.model.INodeAddress;
-
-public class NodeAddress implements INodeAddress {
+/**
+ * Base address of a node
+ */
+public class NodeAddress {
 	
 	protected final String id;
 	protected final String primaryIpAddress;
@@ -17,14 +18,11 @@ public class NodeAddress implements INodeAddress {
 		return id+"/"+primaryIpAddress;
 	}
 
-	@Override
 	public String getId() {
 		return id;
 	}
 	
-	@Override
 	public String getPrimaryIpAddress() {
 		return primaryIpAddress;
 	}
-
 }
