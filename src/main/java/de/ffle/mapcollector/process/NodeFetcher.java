@@ -215,6 +215,7 @@ public class NodeFetcher {
 			node.setModel(nodeString(system,"model2"));
 			node.setNodeType(NodeType.valueOf(nodeString(system,"node_type")));
 			node.setAutoUpdate(nodeValue(system,JsonNode::asBoolean,"autoupdate"));
+			node.setCpuCount(nodeValue(system,JsonNode::asInt,"cpucount"));
 		}
 		JsonNode common=data.get("common");
 		if (common!=null) {

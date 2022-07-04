@@ -61,6 +61,8 @@ public class MeshviewerController {
 			
 			n.model=node.getInfo().getModel();
 			
+			n.cpuCount=node.getInfo().getCpuCount();
+			
 			if (!n.isGateway) { // don't show gateways on map
 				n.location=MeshviewerLocation.of(
 						node.getInfo().getLocationLatitude(),

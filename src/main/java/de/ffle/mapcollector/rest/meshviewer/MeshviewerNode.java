@@ -35,6 +35,9 @@ public class MeshviewerNode {
 	
 	public String domain;
 	
+	@JsonProperty("nproc")
+	public Integer cpuCount;
+	
 	@JsonProperty("is_online")
 	public boolean online;
 

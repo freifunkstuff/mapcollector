@@ -23,6 +23,8 @@ public class NodeInfo {
 	protected String location;
 	protected String contactEmail;
 	protected String note;
+	
+	protected Integer cpuCount;
 
 	public void setCommunity(String community) {
 		this.community = community;
@@ -126,6 +128,14 @@ public class NodeInfo {
 
 	public void setNote(String note) {
 		this.note = note;
+	}
+	
+	public Integer getCpuCount() {
+		return cpuCount;
+	}
+	
+	public void setCpuCount(Integer cpuCount) {
+		this.cpuCount = cpuCount;
 	}
 
 }
