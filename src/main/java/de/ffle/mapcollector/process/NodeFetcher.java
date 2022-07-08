@@ -262,8 +262,9 @@ public class NodeFetcher {
 			stats.setClients2g(nodeValue(statistic, (n)->n.intValue(), "client2g","1min"));
 			stats.setClients5g(nodeValue(statistic, (n)->n.intValue(), "client5g","1min"));
 			
-			stats.setTrafficWifiRx(nodeValue(statistic, (n)->n.longValue(), "interfaces","wifi2_rx"));
-			stats.setTrafficWifiTx(nodeValue(statistic, (n)->n.longValue(), "interfaces","wifi2_tx"));
+			// there is no separate wifi5 traffic
+			stats.setTrafficWifiRx(nodeValue(statistic, (n)->parseLong(n.textValue()), "interfaces","wifi2_rx"));
+			stats.setTrafficWifiTx(nodeValue(statistic, (n)->parseLong(n.textValue()), "interfaces","wifi2_tx"));
 			
 			stats.setMemTotal(DataHelper.parseNBytes(nodeString(statistic, "meminfo_MemTotal")));
 			stats.setMemFree(DataHelper.parseNBytes(nodeString(statistic, "meminfo_MemFree")));
@@ -406,6 +407,22 @@ public class NodeFetcher {
 		return result;
 	}
 	
+	protected Long parseLong(String value) {
+		if (value!=null) try {
+			return Long.parseLong(value);
+		} catch (Exception ex) {
+		}
+		return null;
+	}
+	protected Long add(Long l1, Long l2) {
+		if (l1==null) {
+			return l2;
+		}
+		if (l2==null) {
+			return l1;
+		}
+		return l1+l2;
+	}
 
 	protected JsonNode oneOf(JsonNode node, String... children) {
 		if (node!=null) {

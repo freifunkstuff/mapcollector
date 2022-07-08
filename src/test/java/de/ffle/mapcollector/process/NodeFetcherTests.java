@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.ffle.mapcollector.CommunityFilter;
 import de.ffle.mapcollector.model.Node;
 import de.ffle.mapcollector.model.NodeInfo;
+import de.ffle.mapcollector.model.NodeStats;
 import de.ffle.mapcollector.model.NodeType;
 import de.ffle.mapcollector.repository.INodeRepository;
 
@@ -76,4 +77,41 @@ public class NodeFetcherTests {
 		
 	}
 
+	@Test
+	public void testFetchNode1708() throws Exception {
+		
+		JsonNode sysinfo=loadSysinfo("testdata/1708.json");
+		
+		NodeInfo info=nodeFetcher.parseNodeInfo(sysinfo);
+		
+		assertThat(info)
+			.isNotNull()
+			.hasFieldOrPropertyWithValue("firmwareBase", "OpenWrt 21.02.2 r16495-bf0c965af0")
+			.hasFieldOrPropertyWithValue("firmwareRelease", "8.0.6")
+			.hasFieldOrPropertyWithValue("model", "TP-Link CPE210 v1")
+			.hasFieldOrPropertyWithValue("nodeType", NodeType.node)
+			.hasFieldOrPropertyWithValue("autoUpdate", true)
+			.hasFieldOrPropertyWithValue("community", "Leipzig")
+			.hasFieldOrPropertyWithValue("locationLatitude", 51.33557)
+			.hasFieldOrPropertyWithValue("locationLongitude", 12.23935)
+			.hasFieldOrPropertyWithValue("locationAltitude", 0)
+			.hasFieldOrPropertyWithValue("name", "mw-cpe210-1")
+			.hasFieldOrPropertyWithValue("location", "Falkenweg 5, 04420 Frankenheim")
+			.hasFieldOrPropertyWithValue("contactEmail", "freifunk@michael.wyraz.de")
+			.hasFieldOrPropertyWithValue("note", "")
+			;
+
+		NodeStats stats=nodeFetcher.parseNodeStats(sysinfo);
+		
+		assertThat(stats)
+			.isNotNull()
+			.hasFieldOrPropertyWithValue("memTotal", 62324736L)
+			.hasFieldOrPropertyWithValue("memFree", 30515200L)
+			.hasFieldOrPropertyWithValue("trafficWifiRx", 154783391L)
+			.hasFieldOrPropertyWithValue("trafficWifiTx", 1159435150L)
+			;
+		
+		
+	}
+	
 }
