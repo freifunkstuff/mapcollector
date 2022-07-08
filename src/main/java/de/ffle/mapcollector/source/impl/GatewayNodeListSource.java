@@ -54,7 +54,6 @@ public class GatewayNodeListSource implements INodeListSource {
 
 	
 	@Override
-	@Scheduled(cron = "0 */5 * * * *")
 	public List<NodeAddress> fetchNodes() throws IOException {
 		byte[] html=downloadNodes();
 		

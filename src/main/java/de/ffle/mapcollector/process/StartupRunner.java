@@ -19,7 +19,7 @@ public class StartupRunner implements CommandLineRunner {
 	
 	@Override
 	public void run(String... args) throws Exception {
-//		newNodeCollector.fetchNewNodes();
+		newNodeCollector.fetchNewNodes();
 //		nodeFetcher.fetchNodeData();
 //		ctx.close();
 //		Thread.sleep(1000);
