@@ -51,6 +51,7 @@ import de.ffle.mapcollector.model.NodeLinkUpdate;
 import de.ffle.mapcollector.model.NodeStats;
 import de.ffle.mapcollector.model.NodeType;
 import de.ffle.mapcollector.repository.INodeRepository;
+import de.ffle.mapcollector.repository.IStatisticsRepository;
 import de.ffle.mapcollector.util.DataHelper;
 
 @Service
@@ -61,10 +62,13 @@ public class NodeFetcher {
 	@Autowired
 	protected INodeRepository nodeRepository;
 	
+	@Autowired(required = false)
+	protected IStatisticsRepository statisticsRepository;
+	
 	@Autowired
 	protected CommunityFilter communityFilter;
 	
-	@Scheduled(cron = "0 */3 * * * *")
+	@Scheduled(cron = "0 * * * * *")
 	public void fetchNodeData() throws Exception {
 		for (Node node: nodeRepository.getNodes()) {
 			if (shouldFetch(node)) {
@@ -84,7 +88,7 @@ public class NodeFetcher {
 			return lastFetchedMinutesAgo>=1;
 		}
 		
-		if (communityFilter.isShownCommunity(node)) {
+		if (communityFilter.isShownCommunity(node.getInfo())) {
 			return lastFetchedMinutesAgo>=5 || lastSeenMinutesAgo>1;
 		}
 		
@@ -449,6 +453,8 @@ public class NodeFetcher {
 		}
 		Collection<NodeLinkUpdate> links=parseNodeLinks(sysinfo);
 		nodeRepository.updateNode(node, info, stats, links);
+		
+		statisticsRepository.sendNodeStatistics(node, info, stats);
 	}
 	protected void updateNodeError(Node node, Throwable cause) {
 		nodeRepository.updateNode(node, null, null, null);

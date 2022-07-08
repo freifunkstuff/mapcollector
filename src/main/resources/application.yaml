@@ -8,9 +8,14 @@ nodefetcher:
   proxyUsername: ${GATEWAY_PROXY_USERNAME:}
   proxyPassword: ${GATEWAY_PROXY_PASSWORD:} 
 
+statistics:
+  victoriametrics:
+    importUrl: ${PROMETHEUS_WRITE_URL:http://127.0.0.1:8428/api/v1/import/prometheus}
+
 noderepo:
   redis:
-    host: 127.0.0.1
+    host: ${REDIS_HOST:127.0.0.1}
+    port: ${REDIS_PORT:6379}
     
 logging:
   level:

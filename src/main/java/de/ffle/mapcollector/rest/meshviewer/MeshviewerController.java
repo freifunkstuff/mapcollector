@@ -39,7 +39,7 @@ public class MeshviewerController {
 			if (node.getInfo()==null) {
 				continue;
 			}
-			if (!communityFilter.isShownCommunity(node)) {
+			if (!communityFilter.isShownCommunity(node.getInfo())) {
 				continue;
 			}
 			

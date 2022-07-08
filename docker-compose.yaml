@@ -1,0 +1,20 @@
+# compose-file for development dependencies
+
+version: '3.4'
+services:
+  keydb:
+    image: eqalpha/keydb:alpine_x86_64_v6.3.1
+    ports:
+      - 6379:6379
+    volumes:
+      - ./workdir/keydb:/data
+  meshviewer:
+    image: ghcr.io/freifunkstuff/meshviewer:master
+    volumes:
+      - ./docker/meshviewer_config.js:/usr/share/nginx/html/config.js
+    ports:
+      - 0.0.0.0:8081:80
+  victoriametrics:
+    image: victoriametrics/victoria-metrics:v1.72.0
+    ports:
+      - 0.0.0.0:8428:8428
