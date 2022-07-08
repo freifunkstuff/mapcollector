@@ -159,7 +159,7 @@ public class MeshviewerController {
 		return node.getInfo().getName()+" ("+node.getId()+")";
 	}
 	
-	protected String generateNodeId(String nodeIdStr) {
+	public static String generateNodeId(String nodeIdStr) {
 		try {
 			int nodeId=Integer.parseInt(nodeIdStr);
 			return String.format("ffdd00%06x", nodeId & 0xFFFFF);

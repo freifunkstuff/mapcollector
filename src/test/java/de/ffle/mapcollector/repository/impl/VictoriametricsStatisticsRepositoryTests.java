@@ -39,7 +39,7 @@ public class VictoriametricsStatisticsRepositoryTests {
 		
 		assertThat(metrics
 				// replace the default labels for better test readability
-				.replace("{nodeid=\"1000\",hostname=\"MyTestNode\",model=\"Mocky Mock\",domain=\"Leipzig\",owner=\"here@example.com\",autoupdater=\"enabled\",firmware_base=\"OpenWrt\",firmware_release=\"6.0.1\"}", "{_labels_}")
+				.replace("{nodeid=\"ffdd000003e8\",hostname=\"MyTestNode\",model=\"Mocky Mock\",domain=\"Leipzig\",owner=\"here@example.com\",autoupdater=\"enabled\",firmware_base=\"OpenWrt\",firmware_release=\"6.0.1\"}", "{_labels_}")
 				.split("[\\r\\n]+"))
 			.containsExactly(
 					"node_info{_labels_} 1",

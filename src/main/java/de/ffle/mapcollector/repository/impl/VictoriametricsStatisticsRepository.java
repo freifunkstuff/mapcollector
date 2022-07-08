@@ -26,6 +26,7 @@ import de.ffle.mapcollector.model.NodeAddress;
 import de.ffle.mapcollector.model.NodeInfo;
 import de.ffle.mapcollector.model.NodeStats;
 import de.ffle.mapcollector.repository.IStatisticsRepository;
+import de.ffle.mapcollector.rest.meshviewer.MeshviewerController;
 
 /**
  * Pushes statistics to a VictoriaMetrics server, using the prometheus import endpoint
@@ -194,8 +195,10 @@ public class VictoriametricsStatisticsRepository implements IStatisticsRepositor
 			return null;
 		}
 		
+		String nodeId=MeshviewerController.generateNodeId(node.getId());
+		
 		Map<String, String> nodeLabels=new LinkedHashMap<>();
-		nodeLabels.put("nodeid", node.getId());
+		nodeLabels.put("nodeid", nodeId);
 		nodeLabels.put("hostname", info.getName());
 		nodeLabels.put("model", info.getModel());
 		nodeLabels.put("domain", info.getCommunity());
