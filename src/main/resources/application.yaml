@@ -4,7 +4,7 @@ nodelist:
     ip: ${GATEWAY_IP}
 
 nodefetcher:
-  proxyUrl: ${GATEWAY_PROXY_URL:}
+  proxyUrl: ${GATEWAY_PROXY_URL}
   proxyUsername: ${GATEWAY_PROXY_USERNAME:}
   proxyPassword: ${GATEWAY_PROXY_PASSWORD:} 
 

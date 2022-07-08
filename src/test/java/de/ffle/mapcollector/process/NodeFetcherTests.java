@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import de.ffle.mapcollector.CommunityFilter;
 import de.ffle.mapcollector.model.Node;
 import de.ffle.mapcollector.model.NodeInfo;
 import de.ffle.mapcollector.model.NodeType;
@@ -29,6 +30,10 @@ public class NodeFetcherTests {
 		@Bean
 		public NodeFetcher nodeFetcher() {
 			return new NodeFetcher();
+		}
+		@Bean
+		public CommunityFilter communityFilter() {
+			return new CommunityFilter();
 		}
 		@Bean
 		public INodeRepository nodeRepository() {
@@ -63,7 +68,7 @@ public class NodeFetcherTests {
 			.hasFieldOrPropertyWithValue("locationLongitude", 12.358973)
 			.hasFieldOrPropertyWithValue("locationAltitude", 8)
 			.hasFieldOrPropertyWithValue("name", "evergreen2020")
-			.hasFieldOrPropertyWithValue("location", "1.+OG")
+			.hasFieldOrPropertyWithValue("location", "1. OG")
 			.hasFieldOrPropertyWithValue("contactEmail", "christoph@freifunk-leipzig.de")
 			.hasFieldOrPropertyWithValue("note", "test notes")
 		;
