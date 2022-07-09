@@ -45,7 +45,7 @@ public class MeshviewerController {
 			
 			MeshviewerNode n=new MeshviewerNode();
 			response.nodes.add(n);
-			n.nodeId=generateNodeId(node.getId());
+			n.nodeId=node.getId();
 			n.addresses=Collections.singletonList(node.getPrimaryIpAddress());
 			n.mac=generateMac(node.getId());
 			n.nodeName=buildNodeName(node);
@@ -116,14 +116,14 @@ public class MeshviewerController {
 			}
 			
 			MeshviewerLink l=new MeshviewerLink();
-			l.sourceId=generateNodeId(link.getLeftNodeId());
+			l.sourceId=link.getLeftNodeId();
 			l.sourceMac=generateMac(link.getLeftNodeId());
 			Integer sourceTq=link.getTq(OFFLINE_MINUTES);
 			if (sourceTq!=null) {
 				l.sourceTq=sourceTq/100d;
 			}
 
-			l.targetId=generateNodeId(link.getRightNodeId());
+			l.targetId=link.getRightNodeId();
 			l.targetMac=generateMac(link.getRightNodeId());
 			Integer targetTq=link.getRq(OFFLINE_MINUTES);
 			if (targetTq!=null) {
@@ -159,15 +159,6 @@ public class MeshviewerController {
 		return node.getInfo().getName()+" ("+node.getId()+")";
 	}
 	
-	public static String generateNodeId(String nodeIdStr) {
-		try {
-			int nodeId=Integer.parseInt(nodeIdStr);
-			return String.format("ffdd00%06x", nodeId & 0xFFFFF);
-		} catch (NumberFormatException ex) {
-			// raw ID for non-digit nodes (should not happen)
-			return nodeIdStr;
-		}
-	}
 	protected String generateMac(String nodeIdStr) {
 		try {
 			int nodeId=Integer.parseInt(nodeIdStr);

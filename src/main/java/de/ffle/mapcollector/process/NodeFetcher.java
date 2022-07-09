@@ -107,6 +107,9 @@ public class NodeFetcher {
 	@Value("${nodefetcher.proxyPassword:}")
 	protected String proxyPassword;
 	
+	@Value("${nodefetcher.finishFetchOnShutdown:false}")
+	protected boolean finishFetchOnShutdown;
+	
 	@PostConstruct
 	protected void initHttpClient() {
 		
@@ -135,19 +138,21 @@ public class NodeFetcher {
 	
 	@PreDestroy
 	protected void shutdownHttpClient() throws IOException {
-		for (Future<?> f: currentlyFetching.values()) {
-			try {
-				f.get();
-			} catch (Throwable th) {
-				while (th instanceof ExecutionException) {
-					th=th.getCause();
+		if (finishFetchOnShutdown) {
+			for (Future<?> f: currentlyFetching.values()) {
+				try {
+					f.get();
+				} catch (Throwable th) {
+					while (th instanceof ExecutionException) {
+						th=th.getCause();
+					}
+					if (th instanceof SocketTimeoutException) {
+						return;
+					}
+					th.printStackTrace();
 				}
-				if (th instanceof SocketTimeoutException) {
-					return;
-				}
-				th.printStackTrace();
+				
 			}
-			
 		}
 		if (httpClient!=null) {
 			httpClient.close();

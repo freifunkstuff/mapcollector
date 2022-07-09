@@ -195,10 +195,8 @@ public class VictoriametricsStatisticsRepository implements IStatisticsRepositor
 			return null;
 		}
 		
-		String nodeId=MeshviewerController.generateNodeId(node.getId());
-		
 		Map<String, String> nodeLabels=new LinkedHashMap<>();
-		nodeLabels.put("nodeid", nodeId);
+		nodeLabels.put("nodeid", node.getId());
 		nodeLabels.put("hostname", info.getName());
 		nodeLabels.put("model", info.getModel());
 		nodeLabels.put("domain", info.getCommunity());
@@ -206,7 +204,6 @@ public class VictoriametricsStatisticsRepository implements IStatisticsRepositor
 		nodeLabels.put("autoupdater", info.getAutoUpdate()==null?null: info.getAutoUpdate().booleanValue()?"enabled":"disabled");
 		nodeLabels.put("firmware_base", info.getFirmwareBase());
 		nodeLabels.put("firmware_release", info.getFirmwareRelease());
-		
 		
 		MetricsBuilder mb=new MetricsBuilder();
 
