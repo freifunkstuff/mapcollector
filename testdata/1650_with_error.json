@@ -1,0 +1,203 @@
+{
+ "version":"17",
+ "timestamp":"1657871068",
+ "data":{
+
+		"firmware":{
+			"version":"8.0.7",
+			"DISTRIB_ID":"OpenWrt",
+			"DISTRIB_RELEASE":"21.02.3",
+			"DISTRIB_REVISION":"r16554-1d4dea6d4f",
+			"DISTRIB_CODENAME":"",
+			"DISTRIB_TARGET":"lantiq/xway",
+			"DISTRIB_DESCRIPTION":"OpenWrt 21.02.3 r16554-1d4dea6d4f",
+			"git-openwrt-rev":"42a15ca378e1bc52f125f894d748c31ce3c52903",
+			"git-openwrt-branch":"v21.02.3^0",
+			"git-ddmesh-rev":"013dd319b373fb76454cd90ddc7a36c3e5feee32",
+			"git-ddmesh-branch":"TESTING_FIRMWARE_8.0.7"
+		},
+		"system":{
+			"uptime":"29736.07 19059.08",
+			"uname":"Linux r1650 5.4.188 #0 Sat Apr 16 12:59:34 2022 mips GNU/Linux",
+			"nameserver": [
+				"10.200.200.16"
+			],
+			"date":"Fri Jul 15 09:44:28 CEST 2022",
+			"board":"avm,fritz7312",
+			"model":"avm,fritz7312",
+			"model2":"AVM FRITZ!Box 7312",
+			"cpuinfo":"AR9 rev 1.2",
+			"cpucount":"1",
+			"bmxd" : "BMX 1.1-freifunk-dresden [md5:5ce0e61f8e35b9e94830f83188404150], 10.200.6.121, LWS 20, PWS 100, OGI 5000ms, UT  0:04:44:54, CPU 7.8",
+			"essid":"Freifunk Leipzig",
+			"wifi_roaming" : "1",
+			"wifi_2g_channel": "13",
+			"wifi_5g_channel": "44",
+			"node_type":"node",
+			"splash":0,
+			"email_notification":0,
+			"autoupdate":1,
+			"available_flash_size":"8.1M",
+			"overlay_md5sum": {"md5_current":"7d8716cc9a5edb932083087482a411b9", "md5_previous":"7d8716cc9a5edb932083087482a411b9"}
+		},
+		"opkg":{
+			"packages": [
+				
+			]
+		},
+		"common":{
+			"community":"Leipzig",
+			"group_id":"0",
+			"node":"1650",
+			"domain":"freifunk-dresden.de",
+			"ip":"10.200.6.121",
+			"network_id":"0"
+		},
+		"backbone":{
+			"fastd_pubkey":"9dc7156d2c3d9638edecdc09222522326bec944d0a7d1f08fe25804124a13985",
+			"wg_pubkey":"gapxtelEhRFDQWJ4tF+qnZEINac0lN5T2dF4QFBFeQw="
+		},
+		"gps":{
+			"latitude":51.364101,
+			"longitude":12.359002,
+			"altitude":2
+		},
+		"contact":{
+			"name":"Streetwork.Nord-03",
+			"location":"",
+			"email":"christoph%40freifunk-leipzig.de",
+			"note":""
+		},
+		"statistic" : {
+"client2g" :
+{
+"1min": 0,
+"5min": 0,
+"15min": 2,
+"1h": 3,
+"6h": 5,
+"12h": 5,
+"1d": 0,
+"7d": 0,
+"14d": 0,
+"30d": 0,
+"90d": 0,
+"infinity": 0
+}
+,
+		"interfaces" : {
+"ffgw_rx":"0"
+,"ffgw_tx":"0"
+,"mesh_lan_rx":"0"
+,"mesh_lan_tx":"0"
+,"mesh_vlan_rx":"0"
+,"mesh_vlan_tx":"0"
+,"mesh_wan_rx":"0"
+,"mesh_wan_tx":"0"
+,"tbb_fastd_rx":"0"
+,"tbb_fastd_tx":"0"
+,"tbb_wg_rx":"0"
+,"tbb_wg_tx":"0"
+,"wifi2_rx":"12308"
+,"wifi2_tx":"14673"
+,"wifi_mesh2g_rx":"228009875"
+,"wifi_mesh2g_tx":"82969340"
+		},
+			"meminfo_MemTotal" : "59192 kB",
+			"meminfo_MemFree" : "26852 kB",
+			"meminfo_Buffers" : "3984 kB",
+			"meminfo_Cached" : "11716 kB",
+			"cpu_load" : "1.00 0.72 0.66 1/43 12147",
+			"cpu_stat" : "cpu 591514 0 392271 1905908 0 0 84094 0 0 0",
+			"gateway_usage" : [
+				{"init":"2"},
+				{"10.200.200.16":"169"},
+				{"del":"378"},
+				{"10.200.0.5":"9"},
+				{"10.200.200.13":"5"},
+				{"10.200.200.52":"15"},
+				{"10.200.200.42":"6"},
+				{"10.200.0.202":"13"},
+				{"10.200.200.24":"7"},
+				{"10.200.200.41":"4"},
+				{"10.200.200.18":"30"},
+				{"10.200.200.68":"9"},
+				{"10.200.200.2":"7"},
+				{"10.200.200.27":"7"},
+				{"10.200.0.14":"16"},
+				{"10.200.200.40":"8"},
+				{"10.200.0.15":"14"},
+				{"10.200.0.1":"10"},
+				{"10.200.200.43":"8"},
+				{"10.200.200.65":"4"},
+				{"10.200.0.3":"2"},
+				{"10.200.0.201":"7"},
+				{"10.200.200.9":"6"},
+				{"10.200.200.21":"8"},
+				{"10.200.1.1":"11"},
+				{"10.200.1.2":"3"} ]
+		},
+		"bmxd":{
+			"links":[
+				{"node":"1578", "ip":"10.200.6.49", "interface":"mesh2g-80211s","rtq":"57", "rq":"73", "tq":"78","type":"wifi_mesh"}, 
+				{"node":"1595", "ip":"10.200.6.66", "interface":"mesh2g-80211s","rtq":"96", "rq":"93", "tq":"100","type":"wifi_mesh"}, 
+				{"node":"1709", "ip":"10.200.6.180", "interface":"mesh2g-80211s","rtq":"84", "rq":"77", "tq":"100","type":"wifi_mesh"}, 
+				{"node":"1895", "ip":"10.200.7.111", "interface":"mesh2g-80211s","rtq":"63", "rq":"63", "tq":"100","type":"wifi_mesh"}
+			],
+			"gateways":{
+				"selected":"10.200.0.15",
+				"preferred":"10.200.200.16",
+				"gateways":[
+				{"ip":"10.200.0.15"},
+				{"ip":"10.200.200.52"},
+				{"ip":"10.200.0.3"},
+				{"ip":"10.200.200.68"},
+				{"ip":"10.200.4.124"},
+				{"ip":"10.200.200.13"},
+				{"ip":"10.200.200.42"},
+				{"ip":"10.200.200.2"},
+				{"ip":"10.200.200.24"},
+				{"ip":"10.200.200.21"},
+				{"ip":"10.200.0.201"},
+				{"ip":"10.200.0.14"},
+				{"ip":"10.200.200.18"},
+				{"ip":"10.200.200.27"},
+				{"ip":"10.200.200.41"},
+				{"ip":"10.200.0.5"},
+				{"ip":"10.200.1.1"},
+				{"ip":"10.200.0.1"},
+				{"ip":"10.200.200.9"},
+				{"ip":"10.200.1.2"},
+				{"ip":"10.200.200.40"} ]
+			},
+			"info":[
+				"dev                    bmx_prime            ",
+				"/linklayer          0                    ",
+				"dev                    tbb_fastd            ",
+				"/linklayer          1                    ",
+				"dev                    br-mesh_lan          ",
+				"/linklayer          1                    ",
+				"dev                    br-mesh_wan          ",
+				"/linklayer          1                    ",
+				"dev                    mesh2g-80211s        ",
+				"/linklayer          2                    ",
+				"network                10.200.0.0/16        ",
+				"netid                  0                    ",
+				"path_hysteresis        3                    ",
+				"ogm_broadcasts         100                  ",
+				"hop_penalty            5                    ",
+				"lateness_penalty       10                   ",
+				"purge_timeout          22                   ",
+				"ogm_interval           5000                 ",
+				"udp_data_size          512                  ",
+				"routing_class          3                    ",
+				"gateway_hysteresis     20                   ",
+				"preferred_gateway      10.200.200.16        ",
+				"only_community_gw      1                    " ]
+		},
+		"airtime":{"radio2g":"29568601,2774202,2346590,220445"},
+		"network_switch":{
+"dsa": false,
+}
+  }
+}

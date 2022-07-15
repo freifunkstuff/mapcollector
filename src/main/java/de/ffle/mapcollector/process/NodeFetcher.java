@@ -39,8 +39,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import de.ffle.mapcollector.CommunityFilter;
 import de.ffle.mapcollector.model.LinkType;
@@ -58,6 +61,13 @@ import de.ffle.mapcollector.util.DataHelper;
 public class NodeFetcher {
 	
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
+
+	protected final static ObjectMapper OBJECT_MAPPER=JsonMapper.builder()
+			.enable(JsonReadFeature.ALLOW_MISSING_VALUES)
+			.enable(JsonReadFeature.ALLOW_TRAILING_COMMA)
+			.build();
+	
+	protected final static ObjectReader JSON_READER=OBJECT_MAPPER.reader();
 	
 	@Autowired
 	protected INodeRepository nodeRepository;
@@ -187,7 +197,7 @@ public class NodeFetcher {
 					currentlyFetching.remove(node.getId());
 					JsonNode json;
 					try {
-						json=new ObjectMapper().reader().readTree(result.getEntity().getContent());
+						json=JSON_READER.readTree(result.getEntity().getContent());
 					} catch (Exception ex) {
 						failed(ex);
 						return;

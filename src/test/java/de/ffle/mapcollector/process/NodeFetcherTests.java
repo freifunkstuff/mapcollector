@@ -47,7 +47,7 @@ public class NodeFetcherTests {
 	protected NodeFetcher nodeFetcher; 
 	
 	protected JsonNode loadSysinfo(String path) throws Exception {
-		return new ObjectMapper().readTree(new File(path));
+		return NodeFetcher.OBJECT_MAPPER.readTree(new File(path));
 	}
 	
 	@Test
@@ -113,5 +113,12 @@ public class NodeFetcherTests {
 		
 		
 	}
+	
+	@Test
+	public void testFetchNode1650_with_json_error() throws Exception {
+		
+		JsonNode sysinfo=loadSysinfo("testdata/1650_with_error.json");
+	}
+	
 	
 }
