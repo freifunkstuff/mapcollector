@@ -246,6 +246,38 @@ public class VictoriametricsStatisticsRepository implements IStatisticsRepositor
 		mb.metric("node_memory.available")
 			.labels(nodeLabels)
 			.value(stats.getMemFree());
+
+		mb.metric("node_memory.airtime_2g_busy")
+			.labels(nodeLabels)
+			.value(stats.getAirtime2gBusy());
+
+		mb.metric("node_memory.airtime_2g_active")
+			.labels(nodeLabels)
+			.value(stats.getAirtime2gActive());
+
+		mb.metric("node_memory.airtime_2g_rx")
+			.labels(nodeLabels)
+			.value(stats.getAirtime2gRx());
+
+		mb.metric("node_memory.airtime_2g_tx")
+			.labels(nodeLabels)
+			.value(stats.getAirtime2gTx());
+
+		mb.metric("node_memory.airtime_5g_busy")
+			.labels(nodeLabels)
+			.value(stats.getAirtime5gBusy());
+
+		mb.metric("node_memory.airtime_5g_active")
+			.labels(nodeLabels)
+			.value(stats.getAirtime5gActive());
+
+		mb.metric("node_memory.airtime_5g_rx")
+			.labels(nodeLabels)
+			.value(stats.getAirtime5gRx());
+
+		mb.metric("node_memory.airtime_5g_tx")
+			.labels(nodeLabels)
+			.value(stats.getAirtime5gTx());
 		
 		return mb.toString();
 	}
