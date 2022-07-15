@@ -1,6 +1,7 @@
 package de.ffle.mapcollector.rest.meshviewer;
 
 import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -30,16 +31,22 @@ public class MeshviewerController {
 	
 	protected final int OFFLINE_MINUTES=10;
 	
+	protected final int HIDE_STALE_TEMP_NODES_AFTER_MINUTES=30;
+	protected final int HIDE_STALE_NODES_AFTER_DAYS=30;
+	
 	protected MeshviewerResponse response;
 	
 	protected void fetch() {
 		MeshviewerResponse response=new MeshviewerResponse();
 		
 		for (Node node: nodeRepository.getNodes()) {
-			if (node.getInfo()==null) {
+			if (node.getId()==null || node.getInfo()==null) {
 				continue;
 			}
 			if (!communityFilter.isShownCommunity(node.getInfo())) {
+				continue;
+			}
+			if (isStale(node,response.timestamp)) {
 				continue;
 			}
 			
@@ -79,7 +86,7 @@ public class MeshviewerController {
 			
 			n.domain=node.getInfo().getCommunity();
 			
-			if (node.getLastSeen()!=null && Duration.between(node.getLastSeen(), response.timestamp).toMinutes()<OFFLINE_MINUTES) {
+			if (isOnline(node,response.timestamp)) {
 				n.online=true;
 				NodeStats stats=node.getStats();
 				if (stats!=null) {
@@ -150,6 +157,23 @@ public class MeshviewerController {
 		}
 		this.response=response;
 		
+	}
+
+	protected boolean isStale(Node node, ZonedDateTime now) {
+		if (node.getLastSeen()==null) {
+			return true;
+		}
+		if (node.getId().matches("9\\d\\d")) { // 9xx = temp nodes
+			return Duration.between(node.getLastSeen(), now).toMinutes()>HIDE_STALE_TEMP_NODES_AFTER_MINUTES;
+		}
+		return Duration.between(node.getLastSeen(), now).toDays()>HIDE_STALE_NODES_AFTER_DAYS;
+	}
+	
+	protected boolean isOnline(Node node, ZonedDateTime now) {
+		if (node.getLastSeen()==null) {
+			return false;
+		}
+		return Duration.between(node.getLastSeen(), now).toMinutes()<OFFLINE_MINUTES;
 	}
 	
 	protected String buildNodeName(Node node) {
