@@ -31,7 +31,7 @@ public class StartupRunner implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		newNodeCollector.fetchNewNodes();
-//		nodeFetcher.fetchNodeData();
+		nodeFetcher.fetchNodeData();
 //		Map<String, Map<String,MutableInt>> byType=new TreeMap<>();
 //		for (Node node: nodeRepository.getNodes()) {
 //			if (node.getInfo()==null) continue;
