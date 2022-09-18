@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -31,7 +30,10 @@ import org.apache.http.concurrent.FutureCallback;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.impl.nio.conn.PoolingNHttpClientConnectionManager;
+import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,14 +124,21 @@ public class NodeFetcher {
 	protected boolean finishFetchOnShutdown;
 	
 	@PostConstruct
-	protected void initHttpClient() {
+	protected void initHttpClient() throws Exception {
 		
 		HttpAsyncClientBuilder builder = HttpAsyncClients.custom();
 		
 		builder.setDefaultRequestConfig(RequestConfig.custom()
 				  .setConnectTimeout(30000)
 				  .setConnectionRequestTimeout(30000)
-				  .setSocketTimeout(30000).build());
+				  .setSocketTimeout(30000)
+				  .build());
+		
+		PoolingNHttpClientConnectionManager connManager = new PoolingNHttpClientConnectionManager(new DefaultConnectingIOReactor());
+		connManager.setMaxTotal(1200);
+		connManager.setDefaultMaxPerRoute(1200);
+		
+		builder.setConnectionManager(connManager);
 
 		if (StringUtils.isNotBlank(proxyUrl)) {
 			
@@ -177,7 +186,7 @@ public class NodeFetcher {
 			return;
 		}
 		
-		while (currentlyFetching.size()>200) {
+		while (currentlyFetching.size()>1000) {
 			try {
 				synchronized (currentlyFetching) {
 					currentlyFetching.wait(1000);
@@ -199,32 +208,40 @@ public class NodeFetcher {
 					synchronized (currentlyFetching) {
 						currentlyFetching.notifyAll();
 					}
+					logger.debug("Fetching node {} ({}) failed: {}",node.getId(),node.getPrimaryIpAddress(),ex.toString());
 					updateNodeError(node,ex);
 				}
 				
 				@Override
 				public void completed(HttpResponse result) {
-					if (result.getStatusLine().getStatusCode()!=200) {
-						logger.debug("Fetching node {} ({}) failed: {}",node.getId(),node.getPrimaryIpAddress(),result.getStatusLine());
-						failed(null);
-						return;
-					}
-					currentlyFetching.remove(node.getId());
-					synchronized (currentlyFetching) {
-						currentlyFetching.notifyAll();
-					}
-					JsonNode json;
 					try {
-						json=JSON_READER.readTree(result.getEntity().getContent());
-					} catch (Exception ex) {
-						failed(ex);
-						return;
-					}
-					try {
-						updateNode(node,json);
-						logger.debug("Fetching node {} succeeded",node.getId());
-					} catch (Exception ex) {
-						logger.debug("Node {} fetched update failed",node.getId(),ex);
+						if (result.getStatusLine().getStatusCode()!=200) {
+							logger.debug("Fetching node {} ({}) failed: {}",node.getId(),node.getPrimaryIpAddress(),result.getStatusLine());
+							failed(null);
+							return;
+						}
+						currentlyFetching.remove(node.getId());
+						synchronized (currentlyFetching) {
+							currentlyFetching.notifyAll();
+						}
+						JsonNode json;
+						try {
+							json=JSON_READER.readTree(result.getEntity().getContent());
+						} catch (Exception ex) {
+							failed(ex);
+							return;
+						}
+						try {
+							updateNode(node,json);
+							logger.debug("Fetching node {} succeeded",node.getId());
+						} catch (Exception ex) {
+							logger.debug("Node {} fetched update failed",node.getId(),ex);
+						}
+					} finally {
+						try {
+							EntityUtils.consume(result.getEntity());
+						} catch (Exception ex) {
+						}
 					}
 				}
 				
