@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -175,6 +176,17 @@ public class NodeFetcher {
 			logger.debug("Should fetch node {} but last fetch is not yet finished",node.getId());
 			return;
 		}
+		
+		while (currentlyFetching.size()>200) {
+			try {
+				synchronized (currentlyFetching) {
+					currentlyFetching.wait(1000);
+				} 
+			} catch (InterruptedException ex) {
+				Thread.currentThread().interrupt();
+			}
+		}
+		
 		logger.trace("Fetching node {} ({})",node.getId(), node.getPrimaryIpAddress());
 		
 		
@@ -184,6 +196,9 @@ public class NodeFetcher {
 				@Override
 				public void failed(Exception ex) {
 					currentlyFetching.remove(node.getId());
+					synchronized (currentlyFetching) {
+						currentlyFetching.notifyAll();
+					}
 					updateNodeError(node,ex);
 				}
 				
@@ -195,6 +210,9 @@ public class NodeFetcher {
 						return;
 					}
 					currentlyFetching.remove(node.getId());
+					synchronized (currentlyFetching) {
+						currentlyFetching.notifyAll();
+					}
 					JsonNode json;
 					try {
 						json=JSON_READER.readTree(result.getEntity().getContent());
@@ -213,6 +231,9 @@ public class NodeFetcher {
 				@Override
 				public void cancelled() {
 					currentlyFetching.remove(node.getId());
+					synchronized (currentlyFetching) {
+						currentlyFetching.notifyAll();
+					}
 					updateNodeError(node,null);
 				}
 			}));
