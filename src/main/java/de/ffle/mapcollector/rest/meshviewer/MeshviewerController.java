@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.yaml.snakeyaml.nodes.NodeId;
 
 import de.ffle.mapcollector.CommunityFilter;
 import de.ffle.mapcollector.model.Node;
+import de.ffle.mapcollector.model.NodeInfo;
 import de.ffle.mapcollector.model.NodeLink;
 import de.ffle.mapcollector.model.NodeStats;
 import de.ffle.mapcollector.model.NodeType;
@@ -67,7 +69,7 @@ public class MeshviewerController {
 			
 			n.cpuCount=node.getInfo().getCpuCount();
 			
-			if (!n.isGateway) { // don't show gateways on map
+			if (!n.isGateway && isValidLocation(node.getInfo())) { // don't show gateways on map
 				n.location=MeshviewerLocation.of(
 						node.getInfo().getLocationLatitude(),
 						node.getInfo().getLocationLongitude(),
@@ -174,6 +176,16 @@ public class MeshviewerController {
 			return false;
 		}
 		return Duration.between(node.getLastSeen(), now).toMinutes()<OFFLINE_MINUTES;
+	}
+	
+	protected boolean isValidLocation(NodeInfo info) {
+		if (info.getLocationLatitude()==null || info.getLocationLongitude()==null) {
+			return false;
+		}
+		if (info.getLocationLatitude()==0.0d && info.getLocationLongitude()==0.0d) {
+			return false;
+		}
+		return true;
 	}
 	
 	protected String buildNodeName(Node node) {
