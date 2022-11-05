@@ -155,7 +155,11 @@ public class NIONodeFetcher extends AbstractNodeFetcher {
 							updateNode(node,json);
 							logger.debug("Fetching node {} succeeded",node.getId());
 						} catch (Exception ex) {
-							logger.debug("Node {} fetched update failed",node.getId(),ex);
+							if (logger.isDebugEnabled()) {
+								logger.debug("Node {} fetched update failed",node.getId(),ex);
+							} else {
+								logger.info("Node {} fetched update failed",node.getId(),ex.toString());
+							}
 						}
 					} finally {
 						try {
