@@ -29,8 +29,8 @@ public class NodeFetcherTests {
 	public static class TestConfig {
 		
 		@Bean
-		public NodeFetcher nodeFetcher() {
-			return new NodeFetcher();
+		public NIONodeFetcher nodeFetcher() {
+			return new NIONodeFetcher();
 		}
 		@Bean
 		public CommunityFilter communityFilter() {
@@ -44,10 +44,10 @@ public class NodeFetcherTests {
 	}
 	
 	@Autowired
-	protected NodeFetcher nodeFetcher; 
+	protected NIONodeFetcher nodeFetcher; 
 	
 	protected JsonNode loadSysinfo(String path) throws Exception {
-		return NodeFetcher.OBJECT_MAPPER.readTree(new File(path));
+		return NIONodeFetcher.OBJECT_MAPPER.readTree(new File(path));
 	}
 	
 	@Test

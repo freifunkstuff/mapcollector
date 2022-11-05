@@ -4,7 +4,7 @@ public enum NodeType {
 	
 	node,
 	server,
-	
+	mobile,
 	;
 
 }

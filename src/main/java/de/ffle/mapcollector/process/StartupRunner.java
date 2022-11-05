@@ -16,7 +16,7 @@ public class StartupRunner implements CommandLineRunner {
 	protected NewNodeCollector newNodeCollector;
 	
 	@Autowired
-	protected NodeFetcher nodeFetcher;
+	protected AbstractNodeFetcher nodeFetcher;
 	
 	@Autowired
 	protected ConfigurableApplicationContext ctx;
