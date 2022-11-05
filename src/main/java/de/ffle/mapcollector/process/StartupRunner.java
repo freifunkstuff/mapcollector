@@ -1,19 +1,15 @@
 package de.ffle.mapcollector.process;
 
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import org.apache.commons.lang3.mutable.MutableInt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import de.ffle.mapcollector.model.Node;
 import de.ffle.mapcollector.repository.INodeRepository;
 
 @Service
+@Profile("fetcher")
 public class StartupRunner implements CommandLineRunner {
 
 	@Autowired

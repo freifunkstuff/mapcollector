@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,7 @@ import de.ffle.mapcollector.repository.IStatisticsRepository;
 import de.ffle.mapcollector.util.DataHelper;
 
 @Service
+@Profile("fetcher")
 public class NodeFetcher {
 	
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
