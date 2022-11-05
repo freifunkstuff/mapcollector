@@ -137,7 +137,7 @@ public class ThreadedNodeFetcher extends AbstractNodeFetcher {
 					logger.debug("Node {} fetched update failed",node.getId(),ex);
 				}
 			} catch (Exception ex) {
-				logger.debug("Fetching node {} ({}) failed: {}",node.getId(),node.getPrimaryIpAddress(),ex.toString());
+				logger.info("Fetching node {} ({}) failed: {}",node.getId(),node.getPrimaryIpAddress(),ex.toString());
 				updateNodeError(node,ex);
 			} finally {
 				currentlyFetching.remove(node.getId());

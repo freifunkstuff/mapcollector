@@ -366,9 +366,6 @@ public abstract class AbstractNodeFetcher {
 	}
 	protected void updateNodeError(Node node, Throwable cause) {
 		nodeRepository.updateNode(node, null, null, null);
-		if (cause!=null) {
-			cause.printStackTrace();
-		}
 	}
 
 }
