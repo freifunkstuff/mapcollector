@@ -3,6 +3,7 @@ package de.ffle.mapcollector.process;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
+import java.io.FileInputStream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -44,10 +45,12 @@ public class NodeFetcherTests {
 	}
 	
 	@Autowired
-	protected NIONodeFetcher nodeFetcher; 
+	protected AbstractNodeFetcher nodeFetcher; 
 	
 	protected JsonNode loadSysinfo(String path) throws Exception {
-		return NIONodeFetcher.OBJECT_MAPPER.readTree(new File(path));
+		try (FileInputStream in=new FileInputStream(path)) {
+			return AbstractNodeFetcher.parseJson(in);
+		}
 	}
 	
 	@Test
@@ -112,6 +115,12 @@ public class NodeFetcherTests {
 			;
 		
 		
+	}
+
+	@Test
+	public void testFetchNode1649_with_json_error() throws Exception {
+		
+		JsonNode sysinfo=loadSysinfo("testdata/1649_with_error.json");
 	}
 	
 	@Test

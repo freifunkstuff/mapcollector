@@ -146,7 +146,7 @@ public class NIONodeFetcher extends AbstractNodeFetcher {
 						}
 						JsonNode json;
 						try {
-							json=JSON_READER.readTree(result.getEntity().getContent());
+							json=parseJson(result.getEntity().getContent());
 						} catch (Exception ex) {
 							failed(ex);
 							return;

@@ -129,7 +129,7 @@ public class ThreadedNodeFetcher extends AbstractNodeFetcher {
 				synchronized (currentlyFetching) {
 					currentlyFetching.notifyAll();
 				}
-				JsonNode json=JSON_READER.readTree(resp.getEntity().getContent());
+				JsonNode json=parseJson(resp.getEntity().getContent());
 				try {
 					updateNode(node,json);
 					logger.debug("Fetching node {} succeeded",node.getId());

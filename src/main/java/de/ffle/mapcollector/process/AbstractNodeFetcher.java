@@ -1,5 +1,8 @@
 package de.ffle.mapcollector.process;
 
+import java.io.IOError;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -10,6 +13,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,12 +44,12 @@ public abstract class AbstractNodeFetcher {
 	
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected final static ObjectMapper OBJECT_MAPPER=JsonMapper.builder()
+	private final static ObjectMapper OBJECT_MAPPER=JsonMapper.builder()
 			.enable(JsonReadFeature.ALLOW_MISSING_VALUES)
 			.enable(JsonReadFeature.ALLOW_TRAILING_COMMA)
 			.build();
 	
-	protected final static ObjectReader JSON_READER=OBJECT_MAPPER.reader();
+	private final static ObjectReader JSON_READER=OBJECT_MAPPER.reader();
 	
 	@Autowired
 	protected INodeRepository nodeRepository;
@@ -351,6 +356,21 @@ public abstract class AbstractNodeFetcher {
 			return null;
 		}
 		return URLDecoder.decode(s, StandardCharsets.UTF_8);
+	}
+	
+	protected static JsonNode parseJson(InputStream stream) throws IOException {
+		byte[] source=IOUtils.toByteArray(stream);
+		try {
+			return JSON_READER.readTree(source);
+		} catch (JsonParseException ex) {
+			if (ex.getMessage()!=null && ex.getMessage().contains("Unrecognized token 'unknown'")) {
+				// Workaround for https://gitlab.freifunk-dresden.de/firmware-developer/firmware/-/issues/150
+				// alternative: https://github.com/FasterXML/jackson-core/issues/723
+				source=new String(source,StandardCharsets.UTF_8).replace(": unknown",": null").getBytes(StandardCharsets.UTF_8);
+				return JSON_READER.readTree(source);
+			}
+			throw ex;
+		}
 	}
 	
 	protected void updateNode(NodeAddress node, JsonNode sysinfo) {
