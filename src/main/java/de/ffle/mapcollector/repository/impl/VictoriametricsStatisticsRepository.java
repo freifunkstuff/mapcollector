@@ -198,6 +198,7 @@ public class VictoriametricsStatisticsRepository implements IStatisticsRepositor
 		Map<String, String> nodeLabels=new LinkedHashMap<>();
 		nodeLabels.put("nodeid", node.getId());
 		nodeLabels.put("hostname", info.getName());
+		nodeLabels.put("group", info.getGroup());
 		nodeLabels.put("model", info.getModel());
 		nodeLabels.put("domain", info.getCommunity());
 		nodeLabels.put("owner", info.getContactEmail());

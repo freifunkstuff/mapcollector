@@ -16,6 +16,8 @@ public class MeshviewerNode {
 	@JsonProperty("hostname")
 	public String nodeName;
 
+	public String group;
+	
 	public ZonedDateTime firstseen;
 	public ZonedDateTime lastseen;
 	

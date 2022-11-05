@@ -277,6 +277,7 @@ public class NodeFetcher {
 		JsonNode common=data.get("common");
 		if (common!=null) {
 			node.setCommunity(nodeString(common,"community"));
+			node.setGroup(nodeString(common,"group_id"));
 		}
 		JsonNode gps=data.get("gps");
 		if (gps!=null) {

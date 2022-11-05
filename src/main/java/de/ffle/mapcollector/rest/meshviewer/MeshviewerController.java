@@ -64,6 +64,7 @@ public class MeshviewerController {
 			n.isGateway=node.getInfo().getNodeType()==NodeType.server;
 			
 			n.contact=node.getInfo().getContactEmail();
+			n.group=node.getInfo().getGroup();
 			
 			n.model=node.getInfo().getModel();
 			

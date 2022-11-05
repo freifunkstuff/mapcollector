@@ -9,6 +9,7 @@ public class NodeInfo {
 	
 	protected String community;
 	protected String name;
+	protected String group;
 	
 	protected NodeType nodeType;
 	protected String model;
@@ -26,6 +27,13 @@ public class NodeInfo {
 	
 	protected Integer cpuCount;
 
+	public void setGroup(String group) {
+		this.group = group;
+	}
+	public String getGroup() {
+		return group;
+	}
+	
 	public void setCommunity(String community) {
 		this.community = community;
 	}
