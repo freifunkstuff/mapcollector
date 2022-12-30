@@ -27,6 +27,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,6 +67,13 @@ public class ThreadedNodeFetcher extends AbstractNodeFetcher {
 				  .build());
 		
 		builder.setConnectionReuseStrategy(NoConnectionReuseStrategy.INSTANCE);
+		
+		PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
+		connManager.setDefaultMaxPerRoute(5000);
+		connManager.setMaxTotal(5000);
+		builder.setConnectionManager(connManager);
+
+		
 		
 		if (StringUtils.isNotBlank(proxyUrl)) {
 			
