@@ -17,14 +17,18 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.ConnectionReuseStrategy;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.NoConnectionReuseStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
@@ -59,6 +63,8 @@ public class ThreadedNodeFetcher extends AbstractNodeFetcher {
 				  .setConnectionRequestTimeout(30000)
 				  .setSocketTimeout(30000)
 				  .build());
+		
+		builder.setConnectionReuseStrategy(NoConnectionReuseStrategy.INSTANCE);
 		
 		if (StringUtils.isNotBlank(proxyUrl)) {
 			
@@ -119,22 +125,25 @@ public class ThreadedNodeFetcher extends AbstractNodeFetcher {
 		currentlyFetching.put(node.getId(),executor.submit(()->{
 			
 			try (CloseableHttpResponse resp=httpClient.execute(new HttpGet("http://"+node.getPrimaryIpAddress()+"/sysinfo-json.cgi"))) {
-				
-				if (resp.getStatusLine().getStatusCode()!=200) {
-					logger.debug("Fetching node {} ({}) failed: {}",node.getId(),node.getPrimaryIpAddress(),resp.getStatusLine());
-					updateNodeError(node,null);
-					return;
-				}
-				currentlyFetching.remove(node.getId());
-				synchronized (currentlyFetching) {
-					currentlyFetching.notifyAll();
-				}
-				JsonNode json=parseJson(resp.getEntity().getContent());
 				try {
-					updateNode(node,json);
-					logger.debug("Fetching node {} succeeded",node.getId());
-				} catch (Exception ex) {
-					logger.debug("Node {} fetched update failed",node.getId(),ex);
+					if (resp.getStatusLine().getStatusCode()!=200) {
+						logger.debug("Fetching node {} ({}) failed: {}",node.getId(),node.getPrimaryIpAddress(),resp.getStatusLine());
+						updateNodeError(node,null);
+						return;
+					}
+					currentlyFetching.remove(node.getId());
+					synchronized (currentlyFetching) {
+						currentlyFetching.notifyAll();
+					}
+					JsonNode json=parseJson(resp.getEntity().getContent());
+					try {
+						updateNode(node,json);
+						logger.debug("Fetching node {} succeeded",node.getId());
+					} catch (Exception ex) {
+						logger.debug("Node {} fetched update failed",node.getId(),ex);
+					}
+				} finally {
+					EntityUtils.consumeQuietly(resp.getEntity());
 				}
 			} catch (Exception ex) {
 				if (logger.isDebugEnabled()) {
