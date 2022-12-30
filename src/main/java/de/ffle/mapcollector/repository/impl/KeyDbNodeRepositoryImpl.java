@@ -68,6 +68,7 @@ public class KeyDbNodeRepositoryImpl implements INodeRepository {
 				cmd.hset(nodeKey,"ip", node.getPrimaryIpAddress());
 				cmd.hsetnx(nodeKey,"firstSeen", DataHelper.encodeToString(now));
 			}
+			cmd.hsetnx(nodeKey,"lastSeen", DataHelper.encodeToString(now));
 			return added;
 		}
 	}

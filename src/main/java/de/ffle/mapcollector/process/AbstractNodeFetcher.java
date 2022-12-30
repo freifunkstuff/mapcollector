@@ -70,6 +70,14 @@ public abstract class AbstractNodeFetcher {
 	}
 	
 	protected boolean shouldFetch(Node node) {
+
+		// Do not try to fetch nodes that have not been seen in 24 hours
+		if (node.getLastSeen()!=null
+				&& Duration.between(node.getLastSeen(), ZonedDateTime.now()).toHours() > 24) {
+			return false;
+		}
+		
+		
 		if (node.getLastFetched()==null) {
 			return true;
 		}

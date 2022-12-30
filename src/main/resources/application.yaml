@@ -22,9 +22,3 @@ logging:
     root: WARN
     reactor.netty: TRACE
     de.ffle.mapcollector: ${LOG_LEVEL:INFO}
-
-    
-reactor:
-  netty:
-    pool:
-      maxConnections: -1
