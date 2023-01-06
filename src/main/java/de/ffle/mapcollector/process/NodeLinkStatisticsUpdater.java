@@ -26,7 +26,7 @@ public class NodeLinkStatisticsUpdater {
 	@Autowired(required = false)
 	protected IStatisticsRepository statisticsRepository;
 
-	@Scheduled(cron = "0 * * * * *") // every 5 minutes
+	@Scheduled(cron = "0 */5 * * * *") // every 5 minutes
 	public void updateNodeLinkStatistics() {
 		if (statisticsRepository==null) {
 			return;
