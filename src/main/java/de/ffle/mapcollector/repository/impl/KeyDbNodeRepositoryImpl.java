@@ -58,21 +58,6 @@ public class KeyDbNodeRepositoryImpl implements INodeRepository {
 		}
 	}
 
-	protected boolean addNode(NodeAddress node) {
-		try (StatefulRedisConnection<String, String> con=redis.connect()) {
-			RedisCommands<String, String> cmd=con.sync();
-			String nodeKey="node."+node.getId();
-			boolean added=cmd.hsetnx(nodeKey,"id", node.getId());
-			ZonedDateTime now=ZonedDateTime.now();
-			if (added) {
-				cmd.hset(nodeKey,"ip", node.getPrimaryIpAddress());
-				cmd.hsetnx(nodeKey,"firstSeen", DataHelper.encodeToString(now));
-			}
-			cmd.hsetnx(nodeKey,"lastSeen", DataHelper.encodeToString(now));
-			return added;
-		}
-	}
-	
 	@Override
 	public List<Node> getNodes() {
 		try (StatefulRedisConnection<String, String> con=redis.connect()) {
@@ -179,15 +164,38 @@ public class KeyDbNodeRepositoryImpl implements INodeRepository {
 		}
 	}
 
+	protected boolean addNode(NodeAddress node) {
+		try (StatefulRedisConnection<String, String> con=redis.connect()) {
+			RedisCommands<String, String> cmd=con.sync();
+			String nodeKey="node."+node.getId();
+			boolean added=cmd.hsetnx(nodeKey,"id", node.getId());
+			ZonedDateTime now=ZonedDateTime.now();
+			if (added) {
+				cmd.hset(nodeKey,"ip", node.getPrimaryIpAddress());
+				cmd.hsetnx(nodeKey,"firstSeen", DataHelper.encodeToString(now));
+			}
+			cmd.hsetnx(nodeKey,"lastSeen", DataHelper.encodeToString(now));
+			return added;
+		}
+	}
+	
 	@Override
 	public int addNewNodes(List<NodeAddress> nodes) {
-		Collection<String> known=getKnownNodeIds();
+		
 		int newCount=0;
-		for (NodeAddress n: nodes) {
-			if (!known.contains(n.getId())) {
-				if (addNode(n)) {
+		try (StatefulRedisConnection<String, String> con=redis.connect()) {
+			RedisCommands<String, String> cmd=con.sync();
+			
+			for (NodeAddress node: nodes) {
+				String nodeKey="node."+node.getId();
+				boolean added=cmd.hsetnx(nodeKey,"id", node.getId());
+				ZonedDateTime now=ZonedDateTime.now();
+				if (added) {
+					cmd.hset(nodeKey,"ip", node.getPrimaryIpAddress());
+					cmd.hsetnx(nodeKey,"firstSeen", DataHelper.encodeToString(now));
 					newCount++;
 				}
+				cmd.hset(nodeKey,"lastSeen", DataHelper.encodeToString(now));
 			}
 		}
 		return newCount;
