@@ -237,7 +237,7 @@ public class VictoriametricsStatisticsRepository implements IStatisticsRepositor
 		nodeLabels.put("target.id", right.getId());
 		nodeLabels.put("target.hostname", right.getInfo().getName());
 
-		mb.metric("node_info")
+		mb.metric("link_tq")
 			.labels(nodeLabels)
 			.value(tqPercent, linkTs);
 	}
