@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -22,11 +23,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import de.ffle.mapcollector.CommunityFilter;
+import de.ffle.mapcollector.model.Node;
 import de.ffle.mapcollector.model.NodeAddress;
 import de.ffle.mapcollector.model.NodeInfo;
+import de.ffle.mapcollector.model.NodeLink;
 import de.ffle.mapcollector.model.NodeStats;
 import de.ffle.mapcollector.repository.IStatisticsRepository;
-import de.ffle.mapcollector.rest.meshviewer.MeshviewerController;
 
 /**
  * Pushes statistics to a VictoriaMetrics server, using the prometheus import endpoint
@@ -88,6 +90,37 @@ public class VictoriametricsStatisticsRepository implements IStatisticsRepositor
 		httpClient.execute(post, metricsResponseCallback);
 	}
 	
+	@Override
+	public void sendLinkStatistics(Map<String, Node> nodesById, List<NodeLink> nodeLinks) {
+		
+		MetricsBuilder mb=new MetricsBuilder();
+		
+		for (NodeLink link: nodeLinks) {
+			Node n1=nodesById.get(link.getLeftNodeId());
+			Node n2=nodesById.get(link.getRightNodeId());
+			
+			if (n1==null || n2==null) {
+				continue;
+			}
+			
+			if (!communityFilter.isShownCommunity(n1.getInfo())) {
+				continue;
+			}
+			if (!communityFilter.isShownCommunity(n2.getInfo())) {
+				continue;
+			}
+			addLinkStats(mb,link.getLeftTs(), n1, n2, link.getLeftTq());
+			addLinkStats(mb,link.getRightTs(), n2, n1, link.getRightTq());
+		}
+		
+		String stats=mb.toString();
+		if (stats==null) {
+			return;
+		}
+		HttpPost post=new HttpPost(prometheusWriteUrl);
+		post.setEntity(new ByteArrayEntity(stats.getBytes(StandardCharsets.UTF_8),ContentType.TEXT_PLAIN));
+		httpClient.execute(post, metricsResponseCallback);
+	}
 	
 	protected static class MetricsBuilder {
 		protected StringBuilder sb=new StringBuilder();
@@ -166,6 +199,9 @@ public class VictoriametricsStatisticsRepository implements IStatisticsRepositor
 		
 		@Override
 		public String toString() {
+			if (lb.length()==0) {
+				return null;
+			}
 			if (!eof) {
 				sb.append("# EOF\n");
 				eof=true;
@@ -187,6 +223,23 @@ public class VictoriametricsStatisticsRepository implements IStatisticsRepositor
 			}
 		}
 		return result;
+	}
+
+	public static void addLinkStats(MetricsBuilder mb, ZonedDateTime linkTs, Node left, Node right, Integer tqPercent) {
+		
+		if (tqPercent==null || linkTs==null || linkTs.isBefore(ZonedDateTime.now().minusMinutes(15))) {
+			return;
+		}
+		
+		Map<String, String> nodeLabels=new LinkedHashMap<>();
+		nodeLabels.put("source.id", left.getId());
+		nodeLabels.put("source.hostname", left.getInfo().getName());
+		nodeLabels.put("target.id", right.getId());
+		nodeLabels.put("target.hostname", right.getInfo().getName());
+
+		mb.metric("node_info")
+			.labels(nodeLabels)
+			.value(tqPercent, linkTs);
 	}
 	
 	public static String generateMetrics(NodeAddress node, NodeInfo info, NodeStats stats) {

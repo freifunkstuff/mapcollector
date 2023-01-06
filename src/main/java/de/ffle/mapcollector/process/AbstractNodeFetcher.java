@@ -1,6 +1,5 @@
 package de.ffle.mapcollector.process;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLDecoder;
